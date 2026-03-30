@@ -25,8 +25,6 @@ FROM scratch AS app
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /go/bin/app /app
 
-WORKDIR /app
-
 ENV HTTP_SERVER_LISTEN_ADDR=0.0.0.0:8080
 EXPOSE 8080
 
