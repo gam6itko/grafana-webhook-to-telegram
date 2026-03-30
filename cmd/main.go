@@ -2,7 +2,9 @@ package main
 
 import (
 	"net/http"
+	"os"
 
+	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 
 	"github.com/gam6itko/grafana-webhook-to-telegram/internal/config"
@@ -12,6 +14,11 @@ import (
 )
 
 func main() {
+	if _, err := os.Stat(".env"); err == nil {
+		if err := godotenv.Load(); err != nil {
+			panic(err)
+		}
+	}
 	cfg, err := config.LoadFromEnv()
 	if err != nil {
 		panic(err)

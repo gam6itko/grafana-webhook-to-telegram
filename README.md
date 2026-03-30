@@ -2,26 +2,20 @@
 
 Accepts a Grafana webhook and forwards the text to Telegram.
 
-## ENV variables
-
-Environment variables are you can set
-
-```dotenv
-HTTP_SERVER_LISTEN_ADDR=127.0.0.1:8080
-TELEGRAM_API_HOST=https://api.telegram.org
-# BOT_API_KEY_<NAME> — suffix matches /api/<bot_name>/... in the URL (uppercase); hyphens in the name become underscores (my-bot → BOT_API_KEY_MY_BOT)
-BOT_API_KEY_MYBOT=1234567890:***********************************
-```
-
 ## Usage
 
-1. Grafana **Contact point** (HTTP) URL:
+1. Copy `.env.example` to `.env` and set variables:
+   - `BOT_API_KEY_<name>` — bot token from [@BotFather](https://t.me/BotFather). The name in the URL `/api/<name>/...` matches the variable suffix: for `mybot` use `BOT_API_KEY_MYBOT`; hyphens in the URL name become underscores in the variable name (`my-bot` → `BOT_API_KEY_MY_BOT`).
+   - `HTTP_SERVER_LISTEN_ADDR` — listen address (Docker image defaults to `0.0.0.0:8080`).
+   - `TELEGRAM_API_HOST` — usually `https://api.telegram.org` (optional to change).
+
+2. Grafana **Contact point** (HTTP) URL:
 
    `POST` or `PUT` to `http://<host>:<port>/api/<bot_name>/<chat_id>`
 
    `chat_id` is the chat or channel ID (e.g. from [@userinfobot](https://t.me/userinfobot) or the Bot API).
 
-2. Request body is Grafana webhook JSON (`message`, `title`, `status`). Telegram receives `message`, or `title` if `message` is empty.
+3. Request body is Grafana webhook JSON (`message`, `title`, `status`). Telegram receives `message`, or `title` if `message` is empty.
 
 ## Docker build and run
 
