@@ -12,13 +12,12 @@ import (
 )
 
 func main() {
-	logger, err := zap.NewProduction()
+	cfg, err := config.LoadFromEnv()
 	if err != nil {
 		panic(err)
 	}
+	logger := initLogger(&cfg.Logs)
 	defer func() { _ = logger.Sync() }()
-
-	cfg := config.LoadFromEnv()
 	tgClient := telegram.NewClient(telegram.WithBaseURL(cfg.TelegramAPIHost))
 	h := handler.NewWebhook(logger, storage.APIKeyENVStorage{}, tgClient)
 
@@ -30,4 +29,26 @@ func main() {
 	if err := http.ListenAndServe(cfg.ListenAddr, mux); err != nil {
 		logger.Fatal("listen", zap.Error(err))
 	}
+}
+
+// initLogger builds a zap.Logger from logs config (mode, level, disable_stacktrace).
+func initLogger(logs *config.LogsConfig) *zap.Logger {
+	var cfg zap.Config
+	if logs.Mode == "development" {
+		cfg = zap.NewDevelopmentConfig()
+	} else {
+		cfg = zap.NewProductionConfig()
+	}
+	if logs.Level != "" {
+		var l zap.AtomicLevel
+		if err := l.UnmarshalText([]byte(logs.Level)); err == nil {
+			cfg.Level = l
+		}
+	}
+	cfg.DisableStacktrace = logs.DisableStacktrace
+	logger, err := cfg.Build()
+	if err != nil {
+		panic(err)
+	}
+	return logger
 }
