@@ -5,15 +5,39 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"strings"
+	"time"
+
+	"go.uber.org/zap"
 )
 
 // NewTelegramProxy returns a reverse-proxy handler that forwards /tg/{rest}
 // to baseURL/{rest}, stripping the /tg prefix.
-func NewTelegramProxy(baseURL string) (http.Handler, error) {
+func NewTelegramProxy(log *zap.Logger, baseURL string) (http.Handler, error) {
 	target, err := url.Parse(strings.TrimRight(baseURL, "/"))
 	if err != nil {
 		return nil, err
 	}
 	proxy := httputil.NewSingleHostReverseProxy(target)
-	return http.StripPrefix("/tg", proxy), nil
+	inner := http.StripPrefix("/tg", proxy)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		rw := &statusRecorder{ResponseWriter: w, status: http.StatusOK}
+		inner.ServeHTTP(rw, r)
+		log.Info("proxy request",
+			zap.String("method", r.Method),
+			zap.String("path", r.URL.Path),
+			zap.Int("status", rw.status),
+			zap.Duration("duration", time.Since(start)),
+		)
+	}), nil
+}
+
+type statusRecorder struct {
+	http.ResponseWriter
+	status int
+}
+
+func (r *statusRecorder) WriteHeader(code int) {
+	r.status = code
+	r.ResponseWriter.WriteHeader(code)
 }

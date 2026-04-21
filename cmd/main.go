@@ -28,7 +28,7 @@ func main() {
 	tgClient := telegram.NewClient(telegram.WithBaseURL(cfg.TelegramAPIHost))
 	h := handler.NewWebhook(logger, storage.APIKeyENVStorage{}, tgClient)
 
-	tgProxy, err := handler.NewTelegramProxy(cfg.TelegramAPIHost)
+	tgProxy, err := handler.NewTelegramProxy(logger.Named("tg"), cfg.TelegramAPIHost)
 	if err != nil {
 		logger.Fatal("telegram proxy", zap.Error(err))
 	}
