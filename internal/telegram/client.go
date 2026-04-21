@@ -61,7 +61,7 @@ func (c *Client) SendMessage(ctx context.Context, token, chatID, text string) er
 
 	resp, err := c.http.Do(req)
 	if err != nil {
-		return err
+		return fmt.Errorf("%s", strings.ReplaceAll(err.Error(), token, "***"))
 	}
 	defer resp.Body.Close()
 
