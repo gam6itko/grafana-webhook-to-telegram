@@ -20,6 +20,21 @@ func (m *mockSender) SendMessage(ctx context.Context, token, chatID, text string
 	return m.err
 }
 
+func TestMaskTokenInPath(t *testing.T) {
+	cases := []struct {
+		in, want string
+	}{
+		{"/bot123456:ABCDefgh/sendMessage", "/bot***/sendMessage"},
+		{"/bot123456:ABCDefgh/getMe", "/bot***/getMe"},
+		{"/other/path", "/other/path"},
+	}
+	for _, c := range cases {
+		if got := maskTokenInPath(c.in); got != c.want {
+			t.Errorf("maskTokenInPath(%q) = %q; want %q", c.in, got, c.want)
+		}
+	}
+}
+
 func TestWebhook_ServeHTTP(t *testing.T) {
 	log := zap.NewNop()
 	body := `{"message":"hello","title":"t","status":"firing"}`
