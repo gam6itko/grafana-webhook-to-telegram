@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gam6itko/grafana-webhook-to-telegram/internal/handler"
+	"github.com/gam6itko/i-love-pkh/internal/handler"
 )
 
 var _ handler.MessageSender = (*Client)(nil)

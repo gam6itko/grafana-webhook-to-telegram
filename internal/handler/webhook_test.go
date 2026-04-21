@@ -8,8 +8,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gam6itko/grafana-webhook-to-telegram/internal/storage"
 	"go.uber.org/zap"
+
+	"github.com/gam6itko/i-love-pkh/internal/storage"
 )
 
 type mockSender struct {

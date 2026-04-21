@@ -1,4 +1,4 @@
-module github.com/gam6itko/grafana-webhook-to-telegram
+module github.com/gam6itko/i-love-pkh
 
 go 1.24.7
 

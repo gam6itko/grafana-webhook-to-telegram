@@ -7,10 +7,10 @@ import (
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 
-	"github.com/gam6itko/grafana-webhook-to-telegram/internal/config"
-	"github.com/gam6itko/grafana-webhook-to-telegram/internal/handler"
-	"github.com/gam6itko/grafana-webhook-to-telegram/internal/storage"
-	"github.com/gam6itko/grafana-webhook-to-telegram/internal/telegram"
+	"github.com/gam6itko/i-love-pkh/internal/config"
+	"github.com/gam6itko/i-love-pkh/internal/handler"
+	"github.com/gam6itko/i-love-pkh/internal/storage"
+	"github.com/gam6itko/i-love-pkh/internal/telegram"
 )
 
 func main() {

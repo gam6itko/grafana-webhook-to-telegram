@@ -28,6 +28,12 @@ func NewTelegramProxy(log *zap.Logger, baseURL string) (http.Handler, error) {
 		Rewrite: func(r *httputil.ProxyRequest) {
 			r.SetURL(target)
 		},
+		ErrorHandler: func(w http.ResponseWriter, r *http.Request, err error) {
+			log.Error("upstream error",
+				zap.String("path", maskTokenInPath(r.URL.Path)),
+				zap.Error(err),
+			)
+		},
 	}
 	inner := http.StripPrefix("/tg", proxy)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

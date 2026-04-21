@@ -9,7 +9,7 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/gam6itko/grafana-webhook-to-telegram/internal/storage"
+	"github.com/gam6itko/i-love-pkh/internal/storage"
 )
 
 var botNamePattern = regexp.MustCompile(`^[a-zA-Z0-9_-]+$`)
