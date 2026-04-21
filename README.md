@@ -44,3 +44,17 @@ docker run --rm -p 8080:8080 \
 ```
 
 Locally without Docker: `go run ./cmd` (`.env` is not loaded automatically — export variables or use something like `env $(grep -v '^#' .env | xargs) go run ./cmd`).
+
+## Telegram API proxy (`/tg`)
+
+The service also exposes a transparent reverse proxy to the Telegram Bot API at `/tg/`.
+
+Any `GET` or `POST` request to `/tg/<path>` is forwarded to `<TELEGRAM_API_HOST>/<path>` with the `/tg` prefix stripped.
+
+This lets Telegram bots in the same network use this service as their API endpoint instead of reaching `api.telegram.org` directly:
+
+```
+https://<host>:<port>/tg/bot<token>/sendMessage
+```
+
+The proxy target is controlled by the same `TELEGRAM_API_HOST` environment variable used for webhook delivery.
